@@ -1,0 +1,22 @@
+name: Daily Update
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # every day at midnight UTC
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Update Timestamp
+        run: |
+          echo "<!-- Last updated: $(date -u) -->" > timestamp.html
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add timestamp.html
+          git commit -m "Daily update $(date -u)" || echo "No changes to commit"
+          git push
