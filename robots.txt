@@ -1,0 +1,32 @@
+# robots.txt for SkkJodhpur
+# Allow general crawling of the public site, disallow sensitive or staging paths.
+
+User-agent: *
+Allow: /
+Allow: /static/
+Allow: /assets/
+Allow: /images/
+Allow: /css/
+Allow: /js/
+
+# Block admin, API, authentication and common sensitive paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /login/
+Disallow: /dashboard/
+Disallow: /config/
+Disallow: /private/
+Disallow: /tmp/
+Disallow: /cgi-bin/
+Disallow: /node_modules/
+
+# Avoid indexing query-parameter driven duplicates
+Disallow: /*?*
+
+# Sitemap
+Sitemap: https://skk-jodhpur.vercel.app/sitemap.xml
+
+# Notes:
+# - Update the Sitemap URL above if you host on a different domain.
+# - Add or remove Disallow rules depending on what you expose in production.

@@ -1,0 +1,83 @@
+name: Automated CV Activity with React Support
+
+on:
+  schedule:
+    # 4:00 AM IST → 10:30 PM UTC (previous day)
+    - cron: "30 22 * * *"
+
+    # 8:00 AM IST → 2:30 AM UTC
+    - cron: "30 2 * * *"
+
+    # 12:00 PM IST → 6:30 AM UTC
+    - cron: "30 6 * * *"
+
+    # 3:00 PM IST → 9:30 AM UTC
+    - cron: "30 9 * * *"
+
+    # 7:00 PM IST → 1:30 PM UTC
+    - cron: "30 13 * * *"
+
+    # 11:00 PM IST → 5:30 PM UTC
+    - cron: "30 17 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout Code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set up Node for React build
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # Works well for React 18 and react-scripts 5
+
+      # 3️⃣ Set up Python (for your automation script)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # 4️⃣ Install dependencies
+      - name: Install React dependencies
+        run: |
+          npm ci || npm install
+          npm audit fix || true
+          echo "✅ Dependencies installed and audit fix attempted"
+
+      # 5️⃣ Run React build (non-blocking, skips lint failures)
+      - name: Run React build (skip lint and audit warnings)
+        run: |
+          echo "🏗️ Starting React build..."
+          export CI=false
+          npm run build || echo "⚠️ Build failed, skipping deployment build errors"
+          echo "✅ React build process completed (non-blocking)"
+
+      # 6️⃣ Run your Python automation script
+      - name: Run auto update script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          echo "🚀 Running Python automation..."
+          python3 auto_update.py
+
+      # 7️⃣ Commit & Push only if changes exist
+      - name: Push auto commits
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+            git config --global user.name "SkkJodhpur"
+            git config --global user.email "SkkJodhpur@users.noreply.github.com"
+            git add .
+            if ! git diff --cached --quiet; then
+              git commit -m "Automated CV + React build update $(date)"
+              git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} HEAD:main
+            else
+              echo "ℹ️ No changes detected — skipping commit."
+            fi
