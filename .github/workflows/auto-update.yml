@@ -2,25 +2,19 @@ name: Automated CV Activity with React Support
 
 on:
   schedule:
-    # 4:00 AM IST → 10:30 PM UTC (previous day)
     - cron: "30 22 * * *"
-
-    # 8:00 AM IST → 2:30 AM UTC
     - cron: "30 2 * * *"
-
-    # 12:00 PM IST → 6:30 AM UTC
     - cron: "30 6 * * *"
-
-    # 3:00 PM IST → 9:30 AM UTC
     - cron: "30 9 * * *"
-
-    # 7:00 PM IST → 1:30 PM UTC
     - cron: "30 13 * * *"
-
-    # 11:00 PM IST → 5:30 PM UTC
     - cron: "30 17 * * *"
-
   workflow_dispatch:
+
+permissions:
+  contents: write   # 🔥 REQUIRED FIX
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # 🔥 future-proof
 
 jobs:
   update:
@@ -30,14 +24,16 @@ jobs:
       # 1️⃣ Checkout Code
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true   # 🔥 ensures token works for push
 
-      # 2️⃣ Set up Node for React build
+      # 2️⃣ Setup Node
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # Works well for React 18 and react-scripts 5
+          node-version: '20'
 
-      # 3️⃣ Set up Python (for your automation script)
+      # 3️⃣ Setup Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -48,36 +44,28 @@ jobs:
         run: |
           npm ci || npm install
           npm audit fix || true
-          echo "✅ Dependencies installed and audit fix attempted"
 
-      # 5️⃣ Run React build (non-blocking, skips lint failures)
-      - name: Run React build (skip lint and audit warnings)
+      # 5️⃣ React build (non-blocking)
+      - name: Run React build
         run: |
-          echo "🏗️ Starting React build..."
           export CI=false
-          npm run build || echo "⚠️ Build failed, skipping deployment build errors"
-          echo "✅ React build process completed (non-blocking)"
+          npm run build || echo "Build failed, skipping..."
 
-      # 6️⃣ Run your Python automation script
+      # 6️⃣ Run Python script
       - name: Run auto update script
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: |
-          echo "🚀 Running Python automation..."
-          python3 auto_update.py
+        run: python3 auto_update.py
 
-      # 7️⃣ Commit & Push only if changes exist
+      # 7️⃣ Commit & Push
       - name: Push auto commits
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            git config --global user.name "SkkJodhpur"
-            git config --global user.email "SkkJodhpur@users.noreply.github.com"
-            git add .
-            if ! git diff --cached --quiet; then
-              git commit -m "Automated CV + React build update $(date)"
-              git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} HEAD:main
-            else
-              echo "ℹ️ No changes detected — skipping commit."
-            fi
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add .
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Automated update $(date)"
+            git push
+          else
+            echo "No changes to commit"
+          fi
