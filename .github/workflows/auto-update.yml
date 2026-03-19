@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout Code (FIXED)
+      # 1️⃣ Checkout Code (Node.js 24 compatible)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -43,7 +43,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      # 3️⃣ Setup Python
+      # 3️⃣ Setup Python (Node.js 24 compatible)
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
