@@ -66,20 +66,20 @@ jobs:
         run: python3 auto_update.py
 
       # 7️⃣ Commit & Push (SAFE VERSION)
-       - name: Push auto commits
-          run: |
-            git config user.name "github-actions"
-            git config user.email "github-actions@github.com"
-        
-            git add .
-        
-            if ! git diff --cached --quiet; then
-              git commit -m "Automated CV update $(date)"
-        
-              # 🔥 CRITICAL FIX: sync with remote first
-              git pull --rebase origin main
-        
-              git push origin main
-            else
-              echo "No changes to commit"
-            fi
+      - name: Push auto commits
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+      
+          git add .
+      
+          if ! git diff --cached --quiet; then
+            git commit -m "Automated CV update $(date)"
+      
+            # 🔥 sync before push
+            git pull --rebase origin main || true
+      
+            git push origin main
+          else
+            echo "No changes to commit"
+          fi
