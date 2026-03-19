@@ -11,27 +11,37 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # 🔥 REQUIRED FIX
+  contents: write
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # 🔥 future-proof
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout Code
+      # 1️⃣ Checkout Code (FIXED)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: true   # 🔥 ensures token works for push
+          persist-credentials: true
 
       # 2️⃣ Setup Node
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      
+      # 🔥 ADD THIS STEP HERE
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       # 3️⃣ Setup Python
       - name: Set up Python
@@ -45,7 +55,7 @@ jobs:
           npm ci || npm install
           npm audit fix || true
 
-      # 5️⃣ React build (non-blocking)
+      # 5️⃣ React build
       - name: Run React build
         run: |
           export CI=false
@@ -55,7 +65,7 @@ jobs:
       - name: Run auto update script
         run: python3 auto_update.py
 
-      # 7️⃣ Commit & Push
+      # 7️⃣ Commit & Push (SAFE VERSION)
       - name: Push auto commits
         run: |
           git config user.name "github-actions"
@@ -64,8 +74,8 @@ jobs:
           git add .
 
           if ! git diff --cached --quiet; then
-            git commit -m "Automated update $(date)"
-            git push
+            git commit -m "Automated CV update $(date)"
+            git push origin main
           else
             echo "No changes to commit"
           fi
