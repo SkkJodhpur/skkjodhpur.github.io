@@ -78,9 +78,8 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -m "Automated CV + React build update $(date)"
             git fetch origin main
-            git rebase origin/main
-            git push origin main
+            git rebase origin/main || git rebase --abort
+            git push origin main --force-with-lease
           else
             echo "ℹ️ No changes detected — skipping commit."
-          fi
           fi
