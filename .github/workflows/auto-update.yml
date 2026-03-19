@@ -71,14 +71,14 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
       
+          # 🔥 ALWAYS sync first (THIS IS THE FIX)
+          git fetch origin
+          git reset --hard origin/main
+      
           git add .
       
           if ! git diff --cached --quiet; then
             git commit -m "Automated CV update $(date)"
-      
-            # 🔥 sync before push
-            git pull --rebase origin main || true
-      
             git push origin main
           else
             echo "No changes to commit"
