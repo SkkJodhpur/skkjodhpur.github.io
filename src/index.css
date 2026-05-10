@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-sans text-gray-800 bg-gray-50;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans font-bold;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out forwards;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out forwards;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24;
+  }
+
+  .section-title {
+    @apply text-3xl sm:text-4xl font-bold text-gray-900 mb-8 relative inline-block;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .section-title::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-1/2 h-1 bg-royal rounded-full;
+    animation: width-expand 0.5s ease-out;
+  }
+
+  @keyframes width-expand {
+    from { width: 0; }
+    to { width: 50%; }
+  }
+
+  .bg-grid-pattern {
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .nav-link {
+    @apply text-gray-700 hover:text-royal transition-all duration-200 px-3 py-2 relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-royal transition-all duration-200;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  .nav-link.active {
+    @apply text-royal font-medium;
+  }
+
+  .nav-link.active::after {
+    @apply w-full;
+  }
+
+  .skill-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-royal-50 text-royal mr-2 mb-2 transition-all duration-200 hover:bg-royal hover:text-white transform hover:scale-105;
+  }
+
+  .timeline-item {
+    @apply relative pl-8 pb-8 border-l-2 border-royal-light last:border-l-0;
+  }
+
+  .timeline-dot {
+    @apply absolute -left-[9px] w-4 h-4 rounded-full bg-royal border-4 border-white;
+  }
+}
+
+
