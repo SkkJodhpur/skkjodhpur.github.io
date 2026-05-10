@@ -55,19 +55,32 @@ function App() {
         setScrollProgress(progress);
         setIsScrolled(scrollTop > 20);
 
+        const heroSection = document.getElementById("hero");
+        
         const contactSection = document.getElementById("contact");
         const footerSection = document.querySelector("footer");
 
+        let isDark = false;
+
+        // Check if scrolled through hero section (dark background)
+        if (heroSection) {
+          const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+          if (scrollTop < heroBottom - 80) {
+            isDark = true;
+          }
+        }
+
+        // Check contact and footer sections
         if (contactSection && footerSection) {
           const contactTop = contactSection.offsetTop - 120;
           const footerTop = footerSection.offsetTop - 120;
 
           if (scrollTop >= contactTop || scrollTop >= footerTop) {
-            setIsDarkSection(true);
-          } else {
-            setIsDarkSection(false);
+            isDark = true;
           }
         }
+
+        setIsDarkSection(isDark);
       };
 
       window.addEventListener("scroll", handleScroll);
@@ -154,7 +167,11 @@ function App() {
                   `}
                 >
                   {link.name}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-900 to-slate-700 group-hover:w-full transition-all duration-300"></span>
+                  <span
+                    className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r group-hover:w-full transition-all duration-300 ${
+                      isDarkSection ? "from-gray-100 to-gray-300" : "from-slate-900 to-slate-700"
+                    }`}
+                  ></span>
                 </Link>
               ))}
             </div>
