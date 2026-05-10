@@ -325,7 +325,7 @@ const Projects = () => {
             </div>
 
             <div className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4">
-              <h3 className="text-3xl font-bold text-cyan-400">9+</h3>
+              <h3 className="text-3xl font-bold text-cyan-400">12+</h3>
               <p className="text-slate-400 text-sm mt-1">
                 Years Experience
               </p>
