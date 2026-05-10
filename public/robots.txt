@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://skk-jodhpur.vercel.app/sitemap.xml
