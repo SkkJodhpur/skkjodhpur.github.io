@@ -56,6 +56,7 @@ function App() {
         setIsScrolled(scrollTop > 20);
 
         const heroSection = document.getElementById("hero");
+        const projectsSection = document.getElementById("projects");
         
         const contactSection = document.getElementById("contact");
         const footerSection = document.querySelector("footer");
@@ -66,6 +67,16 @@ function App() {
         if (heroSection) {
           const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
           if (scrollTop < heroBottom - 80) {
+            isDark = true;
+          }
+        }
+
+        // Check Projects section (dark theme)
+        if (projectsSection) {
+          const projectsTop = projectsSection.offsetTop - 120;
+          const projectsBottom = projectsSection.offsetTop + projectsSection.offsetHeight - 120;
+
+          if (scrollTop >= projectsTop && scrollTop < projectsBottom) {
             isDark = true;
           }
         }
